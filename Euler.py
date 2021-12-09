@@ -22,12 +22,11 @@ def euler_method(function=None, y0=None, a_b=None, n=None):
 
     for i in range(1, n+1):
         x, y, z, u, v = x0, *yzuv
-        o = [y, z, u, v]
 
         for j in range(0, g):
             f_xy = eval(function[j])
             f[j] = h * f_xy
-            k[j] = o[j] + f[j]
+            k[j] = yzuv[j] + f[j]
             yzuv[j] = k[j]
 
         x0 += h
