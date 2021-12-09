@@ -4,39 +4,54 @@ import math
 
 def runge_kutta(function=None, y0=None, a_b=None, n=None):
     if function is None or y0 is None or a_b is None or n is None:
-        function, y0, a_b, n = diff_input()
+        function, yzuv, a_b, n = diff_input()
 
     a, b = a_b
     h = (b-a)/n
     x0 = a
 
-    answer_list = [(0, y0, x0)]
+    answer_list = [(0, x0, *yzuv)]
+    g = len(yzuv)
+    while len(yzuv) < 4:
+        yzuv.append(None)
+
+    yi, zi, ui, vi = [None] * 4
+    func_i = [yi, zi, ui, vi]
+    k_i = [[None] * 4 for i in range(g)]
+
     for i in range(1, n+1):
-        x = x0
-        y = y0
-        f_xy = eval(function)
-        k1 = h * f_xy
+        for j in range(0, g):
+            x, y, z, u, v = x0, *yzuv
+            f_xy = eval(function[j])
+            k_i[j][0] = h * f_xy
 
-        x = x0 + h/2
-        y = y0 + k1/2
-        f_xy = eval(function)
-        k2 = h * f_xy
+        new_yzuv = yzuv
+        new_yzuv[0:g] = [(yzuv[j] + k_i[j][0]/2) for j in range(g)]
+        for j in range(0, g):
+            x, y, z, u, v = x0 + h/2, *new_yzuv
+            f_xy = eval(function[j])
+            k_i[j][1] = h * f_xy
 
-        x = x0 + h / 2
-        y = y0 + k2 / 2
-        f_xy = eval(function)
-        k3 = h * f_xy
+        new_yzuv = yzuv
+        new_yzuv[0:g] = [(yzuv[j] + k_i[j][1] / 2) for j in range(g)]
+        for j in range(0, g):
+            x, y, z, u, v = x0 + h/2, *new_yzuv
+            f_xy = eval(function[j])
+            k_i[j][2] = h * f_xy
 
-        x = x0 + h
-        y = y0 + k3
-        f_xy = eval(function)
-        k4 = h * f_xy
+        new_yzuv = yzuv
+        new_yzuv[0:g] = [(yzuv[j] + k_i[j][2]) for j in range(g)]
+        for j in range(0, g):
+            x, y, z, u, v = x0 + h, *new_yzuv
+            f_xy = eval(function[j])
+            k_i[j][3] = h * f_xy
 
-        yi = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)
-        x0 = x0 + h
-        y0 = yi
+        for j in range(g):
+            func_i[j] = yzuv[j] + (1/6)*(k_i[j][0] + 2*k_i[j][1] + 2*k_i[j][2] + k_i[j][3])
+            yzuv[j] = func_i[j]
 
-        answer_list.append((i, yi, x0))
+        x0 += h
+        answer_list.append((i, x0, *func_i[0:g]))
 
     return answer_list
 
