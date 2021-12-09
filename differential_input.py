@@ -35,9 +35,10 @@ def valuer(fun):
 def diff_input():
     """
     Ввод для дифференциального уравнение I порядка вида: y'=f(x,y) или систем таких уравнений
-    Начальное условие вида: y(0) = ... | x ∈ [0, ...]
+    Либо для ДУ II порядка вида: y'=f(x,y,y')
+    Начальное условие вида: y(m) = ... | x ∈ [m, ...]
     Точность задаётся целым числом
-    :return: f(x,y) | y(0) | x∈[a, b] | точность(n)
+    :return: [f(x,y,...),...] | [y(0), z[0],...] | x∈[a, b] | точность(n)
     """
 
     flag = False
@@ -71,7 +72,7 @@ def diff_input():
         func1, func2, func3, func4 = [None] * 4
         y0, z0, u0, v0 = [None] * 4
         if mode == 2:
-            for_func = ["z", fun]
+            for_func = ['z', fun]
         else:
             for_func = [func1, func2, func3, func4]
 
