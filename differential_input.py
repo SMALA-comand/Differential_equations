@@ -138,18 +138,6 @@ def diff_input():
                         func = fun
 
         # 2-ой блок, здесь будет ввод начальных условий
-        answer_yzuv = []
-        for i in range(0, system):
-            yzuv = for_yzuv[i]
-            while yzuv is None:
-                try:
-                    some_func = float(input(f'\nВведите {func_string[i]}(0): '))
-                except ValueError:
-                    print('Введите значение в правильном формате!')
-                    continue
-                yzuv = some_func
-                answer_yzuv.append(yzuv)
-
         while a is None or b is None:
             try:
                 aa, bb = map(float, input('\nВведите 2 числа через пробел - начало и конец отрезка.'
@@ -159,6 +147,21 @@ def diff_input():
                 continue
 
             a, b = aa, bb
+
+        answer_yzuv = []
+        for i in range(0, system):
+            yzuv = for_yzuv[i]
+            while yzuv is None:
+                try:
+                    some_func = float(input(f'\nВведите {func_string[i]}({a}): '))
+                except ValueError:
+                    print('Введите значение в правильном формате!')
+                    continue
+                if some_func != a:
+                    print(f'Напишите значение для начала отрезка [{a}, {b}]')
+                    continue
+                yzuv = some_func
+                answer_yzuv.append(yzuv)
 
         # 3-ий блок, здесь будет ввод точности
         while n is None:
