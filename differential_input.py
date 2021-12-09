@@ -4,8 +4,8 @@ import math
 
 def zerodiv(fun):
     count = 0
-    for j in range(20):
-        x = random.randint(-100001, 100001)
+    for j in range(30):
+        x, y, z, u, v = [random.randint(-100001, 100001)] * 5
         try:
             eval(fun)
         except ZeroDivisionError:
@@ -19,8 +19,8 @@ def zerodiv(fun):
 
 def valuer(fun):
     count = 0
-    for j in range(20):
-        x = random.randint(-100001, 100001)
+    for j in range(30):
+        x, y, z, u, v = [random.randint(-100001, 100001)] * 5
         try:
             eval(fun)
         except ValueError:
@@ -34,85 +34,121 @@ def valuer(fun):
 
 def diff_input():
     """
-    Ввод для дифференциального уравнение I порядка вида: y'=f(x,y)
-    Начальное условие вида: y(0) = ... | x ∈ [...]
+    Ввод для дифференциального уравнение I порядка вида: y'=f(x,y) или систем таких уравнений
+    Начальное условие вида: y(0) = ... | x ∈ [0, ...]
     Точность задаётся целым числом
     :return: f(x,y) | y(0) | x∈[a, b] | точность(n)
     """
 
     flag = False
     while not flag:
-        func, a, b, n, y0 = [None] * 5
-
-        # 1-ый блок, вводим функцию
-        while func is None:
-            fun = input('Введите функцию f(x, y): ')
-            if '^' in fun:
-                fun = fun.replace('^', '**')
-            fun = fun.lower()
-
-            plan = ['e', 'pi', 'sin', 'cos', 'tan', 'log']
-            dict_replace = {i: 'math.' + i for i in plan}
-            dict_replace['tg'] = 'math.tan'
-            dict_replace['ln'] = 'math.log'
-            dict_replace['ctan'] = '1/math.tan'
-            dict_replace['ctg'] = '1/math.tan'
-
-            for item in dict_replace:
-                if item in fun:
-                    fun = fun.replace(item, dict_replace[item])
-
-            # проверяем есть ли лишние буквы
-            alphabet0 = ['b', 'd', 'f', 'j', 'k', 'q', 'r', 'u', 'v', 'w', 'z', 'z']
-            alphabet1 = ['t', 'a', 'p', 'i', 's', 'n', 'c', 'o', 'l', 'g', 'h', 'm']
-            alphabet2 = {
-                't': ['math', 'tan'], 'a': ['math', 'tan'], 'p': ['pi'], 'i': ['sin', 'pi'],
-                's': ['sin', 'cos'], 'n': ['tan', 'sin'], 'c': ['cos'], 'o': ['cos', 'log'],
-                'l': ['log'], 'g': ['log'], 'h': ['math'], 'm': ['math']
-            }
-
-            for letter in range(len(alphabet0)):
-                if alphabet0[letter] in fun:
-                    print('У вас есть лишние переменные/символы букв')
-                    break
-                let = alphabet1[letter]
-                if fun.count(let) > sum(list(map(lambda x: fun.count(x), alphabet2[let]))):
-                    print('У вас есть лишние переменные/символы букв')
-                    break
-            else:  # сюда заходим, если for закончился без break
-                x, y = 1, 1  # проверяем zeroDiv, синтаксис, ошибку вызову мат функций, ошибку значений мат функций
-                flag_2 = False
-                try:
-                    eval(fun)
-                except (SyntaxError, NameError):
-                    print('Синтаксическая ошибка!')
-                    flag_2 = True
-                except ValueError:
-                    if valuer(fun):
-                        print('Скорее всего в вашей формуле статическая ошибка в логарифме, исправьте её')
-                        flag_2 = True
-                except ZeroDivisionError:
-                    if zerodiv(fun):
-                        print('Скорее всего в вашей формуле статическое деление на ноль')
-                        flag_2 = True
-                except TypeError:
-                    print('Неправильное использование мат. функций (проверьте ваши логарифмы и триг. ф-ции)')
-                    flag_2 = True
-
-                if flag_2:
-                    func = None
-                if not flag_2:
-                    func = fun
-
-        # 2-ой блок, здесь будет ввод начальных условий
-        while y0 is None:
+        system = None
+        print('Введите кол-во уравнений в системе (от 1 до 4): ')
+        while system is None:
             try:
-                y_0 = float(input('\nВведите y(0): '))
+                count = int(input('Количество уравнений: '))
             except ValueError:
                 print('Введите значение в правильном формате!')
                 continue
+            system = count
 
-            y0 = y_0
+        mode = None
+        if system == 1:
+            print('Для систем из 1 уравнения предусмотрена возможность ввести ДУ 1-ого/2-ого порядка на выбор')
+            while mode is None:
+                try:
+                    digit = int(input('Порядок уравнения: '))
+                except ValueError:
+                    print('Введите значение в правильном формате!')
+                    continue
+                mode = digit
+
+        func1, func2, func3, func4 = [None] * 4
+        y0, z0, u0, v0 = [None] * 4
+        for_func = [func1, func2, func3, func4]
+        for_yzuv = [y0, z0, u0, v0]
+        a, b, n = [None] * 3
+
+        # 1-ый блок, вводим функцию
+        func_string = ['y', 'z', 'u', 'v']
+        string = ', '.join(func_string[0:system])
+        answer_func = []
+        for i in range(0, system):
+            func = for_func[i]
+            while func is None:
+                fun = input(f'Введите функцию d{func_string[i]}/dx = f(x, {string}): ')
+                if '^' in fun:
+                    fun = fun.replace('^', '**')
+                fun = fun.lower()
+
+                plan = ['e', 'pi', 'sin', 'cos', 'tan', 'log']
+                dict_replace = {i: 'math.' + i for i in plan}
+                dict_replace['tg'] = 'math.tan'
+                dict_replace['ln'] = 'math.log'
+                dict_replace['ctan'] = '1/math.tan'
+                dict_replace['ctg'] = '1/math.tan'
+
+                for item in dict_replace:
+                    if item in fun:
+                        fun = fun.replace(item, dict_replace[item])
+
+                # проверяем есть ли лишние буквы
+                alphabet0 = ['z', 'u', 'v', 'j', 'k', 'q', 'r', 'b', 'd', 'w', 'f', 'f']
+                for j in range(0, system-1):
+                    alphabet0[j] = 'j'
+                alphabet1 = ['t', 'a', 'p', 'i', 's', 'n', 'c', 'o', 'l', 'g', 'h', 'm']
+                alphabet2 = {
+                    't': ['math', 'tan'], 'a': ['math', 'tan'], 'p': ['pi'], 'i': ['sin', 'pi'],
+                    's': ['sin', 'cos'], 'n': ['tan', 'sin'], 'c': ['cos'], 'o': ['cos', 'log'],
+                    'l': ['log'], 'g': ['log'], 'h': ['math'], 'm': ['math']
+                }
+
+                for letter in range(len(alphabet0)):
+                    if alphabet0[letter] in fun:
+                        print('У вас есть лишние переменные/символы букв')
+                        break
+                    let = alphabet1[letter]
+                    if fun.count(let) > sum(list(map(lambda x: fun.count(x), alphabet2[let]))):
+                        print('У вас есть лишние переменные/символы букв')
+                        break
+                else:   # сюда заходим, если for закончился без break
+                    x, y, z, u, v = [1] * 5     # проверяем ошибки при вызове eval()
+                    flag_2 = False
+                    try:
+                        eval(fun)
+                    except (SyntaxError, NameError, AttributeError):
+                        print('Синтаксическая ошибка!')
+                        flag_2 = True
+                    except ValueError:
+                        if valuer(fun):
+                            print('Скорее всего в вашей формуле статическая ошибка в логарифме, исправьте её')
+                            flag_2 = True
+                    except ZeroDivisionError:
+                        if zerodiv(fun):
+                            print('Скорее всего в вашей формуле статическое деление на ноль')
+                            flag_2 = True
+                    except TypeError:
+                        print('Неправильное использование мат. функций (проверьте ваши логарифмы и триг. ф-ции)')
+                        flag_2 = True
+
+                    if flag_2:
+                        func = None
+                    if not flag_2:
+                        answer_func.append(fun)
+                        func = fun
+
+        # 2-ой блок, здесь будет ввод начальных условий
+        answer_yzuv = []
+        for i in range(0, system):
+            yzuv = for_yzuv[i]
+            while yzuv is None:
+                try:
+                    some_func = float(input(f'\nВведите {func_string[i]}(0): '))
+                except ValueError:
+                    print('Введите значение в правильном формате!')
+                    continue
+                yzuv = some_func
+                answer_yzuv.append(yzuv)
 
         while a is None or b is None:
             try:
@@ -132,7 +168,7 @@ def diff_input():
                 print('Введите значение в правильном формате!')
                 continue
             if s <= 0:
-                print('Шаг не может быть <= 0')
+                print('Количество не может быть <= 0')
                 continue
             else:
                 n = s
@@ -141,7 +177,7 @@ def diff_input():
         print('В противном случае, напишите "NO" и вы начнёте с первого шага')
         check_input = input()
         if check_input != 'NO':
-            return func, y0, [a, b], n
+            return answer_func, answer_yzuv, [a, b], n
         elif check_input.lower() == 'no':
             continue
 
