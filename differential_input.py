@@ -63,9 +63,18 @@ def diff_input():
                     continue
                 mode = digit
 
+        if mode == 2:
+            fun = input('Введите функцию: ')
+            fun = fun.lower()
+            fun = fun.replace("y\'", "z")
+
         func1, func2, func3, func4 = [None] * 4
         y0, z0, u0, v0 = [None] * 4
-        for_func = [func1, func2, func3, func4]
+        if mode == 2:
+            for_func = ["z", fun]
+        else:
+            for_func = [func1, func2, func3, func4]
+
         for_yzuv = [y0, z0, u0, v0]
         a, b, n = [None] * 3
 
@@ -73,10 +82,18 @@ def diff_input():
         func_string = ['y', 'z', 'u', 'v']
         string = ', '.join(func_string[0:system])
         answer_func = []
+        if mode == 2:
+            system = mode
+
         for i in range(0, system):
             func = for_func[i]
-            while func is None:
-                fun = input(f'Введите функцию d{func_string[i]}/dx = f(x, {string}): ')
+            c = 0
+            while func is None or (mode == 2 and c == 0):
+                if mode != 2:
+                    fun = input(f'Введите функцию d{func_string[i]}/dx = f(x, {string}): ')
+                else:
+                    fun = func
+
                 if '^' in fun:
                     fun = fun.replace('^', '**')
                 fun = fun.lower()
@@ -136,6 +153,12 @@ def diff_input():
                     if not flag_2:
                         answer_func.append(fun)
                         func = fun
+                        c = 1
+
+        if mode == 2:
+            print('Ваше уравнение было превращено в систему: ')
+            print("{" + f'y\' = {answer_func[0]}')
+            print("{" + f'z\' = {answer_func[1]}')
 
         # 2-ой блок, здесь будет ввод начальных условий
         while a is None or b is None:
@@ -156,9 +179,6 @@ def diff_input():
                     some_func = float(input(f'\nВведите {func_string[i]}({a}): '))
                 except ValueError:
                     print('Введите значение в правильном формате!')
-                    continue
-                if some_func != a:
-                    print(f'Напишите значение для начала отрезка [{a}, {b}]')
                     continue
                 yzuv = some_func
                 answer_yzuv.append(yzuv)
