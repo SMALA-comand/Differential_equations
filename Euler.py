@@ -2,13 +2,15 @@ from differential_input import diff_input
 import math
 
 
-def euler_method():
-    function, y0, a_b, n = diff_input()
+def euler_method(function=None, y0=None, a_b=None, n=None):
+    if function is None or y0 is None or a_b is None or n is None:
+        function, y0, a_b, n = diff_input()
+
     a, b = a_b
     h = (b-a)/n
     x0 = a
 
-    answer_list = [(0, x0, y0)]
+    answer_list = [(0, y0, x0)]
     for i in range(1, n+1):
         y = y0
         x = x0
@@ -18,7 +20,7 @@ def euler_method():
         x0 = x+h
         answer_list.append((i, yi, x0))
 
-    return answer_list
+    return function, answer_list
 
 
 if __name__ == "__main__":
