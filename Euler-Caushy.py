@@ -7,37 +7,48 @@ def euler_caushy(function=None, y0=None, a_b=None, n=None):
         euler = euler_method()
         function = euler[0]
         table_euler = euler[1]
-
-        # восстанавливаем значение h, [a, b], y0, x0 из table_euler
-        # имеем массив [(i, yi, xi), ...]
-
-        a = table_euler[0][2]
-        b = table_euler[-1][2]
-        n = len(table_euler)-1
-        h = (b-a)/n
-
-        y0 = table_euler[0][1]
-        x0 = a
     else:
         table_euler = euler_method(function, y0, a_b, n)[1]
-        a, b = a_b
-        h = (b - a) / n
-        x0 = a
 
-    answer_list = [(0, y0, x0)]
+    a = table_euler[0][1]
+    b = table_euler[-1][1]
+    n = len(table_euler) - 1
+    h = (b - a) / n
+
+    yzuv = table_euler[0][2:]
+    yzuv = list(yzuv)
+    x0 = a
+
+    answer_list = [(0, x0, *yzuv)]
+    g = len(yzuv)
+    while len(yzuv) < 4:
+        yzuv.append(None)
+
+    f1, f2, f3, f4 = [None] * 4
+    f = [f1, f2, f3, f4]
+    new_f1, new_f2, new_f3, new_f4 = [None] * 4
+    new_f = [new_f1, new_f2, new_f3, new_f4]
+    yi, zi, ui, vi = [None] * 4
+    k = [yi, zi, ui, vi]
+
     for i in range(1, n+1):
-        y = y0
-        x = x0
-        f_xy = eval(function)
+        x, y, z, u, v = x0, *yzuv
 
-        x = x0+h
-        y = table_euler[i][2]
-        f_xy_dop = eval(function)
+        for j in range(g):
+            f[j] = eval(function[j])
 
-        yi = y0 + (h/2) * (f_xy + f_xy_dop)
-        y0 = yi
-        x0 = x0+h
-        answer_list.append((i, yi, x0))
+        new_yzuv = yzuv
+        new_yzuv[0:g] = table_euler[i][2:]
+        x, y, z, u, v = x0+h, *new_yzuv
+        for j in range(g):
+            new_f[j] = eval(function[j])
+
+        for j in range(g):
+            k[j] = yzuv[j] + (h/2) * (f[j] + new_f[j])
+            yzuv[j] = k[j]
+
+        x0 += h
+        answer_list.append((i, x0, *k[0:g]))
 
     return answer_list
 
