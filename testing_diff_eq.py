@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from Euler import euler_method
 from Euler_Caushy import euler_caushy
 from Runge_Kutta import runge_kutta
+from linear_function import linear_function
 
 
 def comparison():
@@ -25,6 +26,15 @@ def comparison():
     y3 = [i[2] for i in rung]
     plt.plot(x, y1, '-', x, y2, '--', x, y3, '-.')
     plt.show()
+
+    # подготовка данных к МНК
+    euler_mnk = [[x[i], y1[i]] for i in range(100)]
+    euler_c_mnk = [[x[i], y2[i]] for i in range(100)]
+    runge_mnk = [[x[i], y3[i]] for i in range(100)]
+
+    print("Результат МНК для Эйлера:      ", linear_function(euler_mnk)[0])
+    print("Результат МНК для Эйлера-Коши: ", linear_function(euler_c_mnk)[0])
+    print("Результат МНК для Рунге-Кутты: ", linear_function(runge_mnk)[0])
 
 
 comparison()
