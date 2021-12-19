@@ -3,6 +3,14 @@ import math
 
 
 def euler_method(function=None, y0=None, a_b=None, n=None):
+    """
+     Решение уравнение методом Эйлера
+     :param function: Вводимая функция
+     :param y0: Значение функции в точке y(0)
+     :param a_b: Промежуток на котором решаем диф. уравнение
+     :param n: Точность, которая задаётся целым числом
+     :return: function, answer_list
+     """
     if function is None or y0 is None or a_b is None or n is None:
         function, yzuv, a_b, n = diff_input()
 
