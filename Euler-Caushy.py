@@ -3,6 +3,14 @@ import math
 
 
 def euler_caushy(function=None, y0=None, a_b=None, n=None):
+    """
+         Решение уравнение методом Эйлера-Коши
+         :param function: Вводимая функция
+         :param y0: Значение функции в точке y(0)
+         :param a_b: Промежуток на котором решаем диф. уравнение
+         :param n: Точность, которая задаётся целым числом
+         :return: answer_list
+         """
     if function is None or y0 is None or a_b is None or n is None:
         euler = euler_method()
         function = euler[0]
