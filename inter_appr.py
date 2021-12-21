@@ -9,13 +9,18 @@ def check_distance(coord):
         :param coord: Список с координатми
     """
     x_coord = [x[0] for x in coord]
-    d = coord[1][0] - coord[0][0]
-    s = x_coord[0]
+    d = x_coord[1] - x_coord[0]
+    if (len(x_coord)-1)*d + x_coord[0] == x_coord[len(x_coord) - 1]:
+        return True
+    else:
+        return False
+
     for x in x_coord:
         if s == x:
             s += d
             continue
         else:
+            print(s)
             return False
     return True
 
@@ -129,9 +134,8 @@ def newton_interpolation(coord, delta=0):
         res_dy = []
         # Коэффициенты многочлена Ньютона
         cof = [y0]
-
         # Цикл по всем точкам, которые мы хотим найти
-        for x in range(int(sort_coord[0]) - delta, int(sort_coord[-1]) + 1 + delta):
+        for x in sort_coord:
             result = y0
             new_d = y_coord
             # Цикл по кол-ву изначальных точек
@@ -155,6 +159,7 @@ def newton_interpolation(coord, delta=0):
         if delta == 0:
             # Массив  точек в формате [xi, yi, fi]
             ans = []
+            #print(l_res)
             for i in range(len(y_coord)):
                 ans.append([x_coord[i], y_coord[i], l_res[x_coord[i]]])
             #print(f'Массив  точек в формате [xi, yi, fi] (fi – значение интерполированной функции в точках): {ans}')
@@ -255,4 +260,4 @@ def cubic_spline_interpolation(coord, x0=[]):
 
 # check_distance(coord = [[0,-1],[1,-3],[2,3],[6,1187]])
 # lagrange_interpolation(coord = [[0,-1],[1,-3],[2,3],[6,1187]])
-# newton_interpolation(coord = [[0,-1],[1,-3],[2,3],[3,1187]], delta = 0)[1]
+#print(newton_interpolation(coord = [[0.1,-1],[0.2,-3],[0.3,3],[0.4,1187]], delta = 0)[1])

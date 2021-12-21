@@ -1,4 +1,4 @@
-from csv_reader import get_csv_coord
+#from csv_reader import get_csv_coord
 from quadratic_function import quadratic_function
 from math import log, exp
 
@@ -39,7 +39,7 @@ def gauss_function(coords):
         coord.append(el)
 
     func = answer_b
-    print(coord)
+    #print(coord)
     return(func, coord)
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 import numpy as np
-from csv_reader import get_csv_coord
+#from csv_reader import get_csv_coord
 
 
 def quadratic_function(coord, is_gauss = 0):
