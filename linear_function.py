@@ -3,8 +3,6 @@ import numpy as np
 
 def linear_function(coord):
     """
-    Тест
-
         :param coord: координаты точек в форме массива [[x1, y1], [x2, y2], ...]
         :return: возвращает кортеж (функция в виде строки, [[x1, y1, f1], ...])
     """
